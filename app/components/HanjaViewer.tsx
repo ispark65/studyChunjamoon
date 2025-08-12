@@ -31,8 +31,10 @@ export const HanjaViewer: React.FC<HanjaViewerProps> = ({ start, end, onBack }) 
         const allHanjas: Hanja[] = await response.json();
         const filteredHanjas = allHanjas.filter(hanja => hanja.id >= start && hanja.id <= end);
         setHanjas(filteredHanjas);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+        }
       } finally {
         setLoading(false);
       }
@@ -68,4 +70,3 @@ export const HanjaViewer: React.FC<HanjaViewerProps> = ({ start, end, onBack }) 
     </div>
   );
 };
-

@@ -16,7 +16,7 @@ interface HanjaQuizProps {
 }
 
 // shuffleArray 함수를 컴포넌트 외부로 이동
-const shuffleArray = <T>(array: T[]): T[] => {
+const shuffleArray = <T,>(array: T[]): T[] => {
   const newArray = [...array]; // 원본 배열을 변경하지 않기 위해 복사
   for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -91,7 +91,11 @@ export const HanjaQuiz: React.FC<HanjaQuizProps> = ({ start, end, onQuizEnd }) =
           setQuizFinished(true); // No questions to load, so quiz is finished
         }
       } catch (error) {
-        console.error("Failed to fetch hanjas:", error);
+        if (error instanceof Error) {
+          console.error("Failed to fetch hanjas:", error.message);
+        } else {
+          console.error("An unknown error occurred during fetch");
+        }
         setQuizFinished(true); // Error fetching, so quiz is finished
       }
     };
@@ -174,4 +178,3 @@ export const HanjaQuiz: React.FC<HanjaQuizProps> = ({ start, end, onQuizEnd }) =
     </div>
   );
 };
-
