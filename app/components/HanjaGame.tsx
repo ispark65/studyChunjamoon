@@ -95,7 +95,7 @@ export const HanjaGame: React.FC<HanjaGameProps> = ({ hanjasToGame, onGameEnd })
 
     setGameHanjas(selectedHanjas);
 
-    let shuffledHanjas = [...selectedHanjas];
+    const shuffledHanjas = [...selectedHanjas];
 
     // Difficulty logic
     if (difficulty === 1) { // 20 correct, based on groups of 2

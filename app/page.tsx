@@ -54,7 +54,7 @@ export default function Home() {
     });
   };
 
-  const handleStart = (selectedMode: 'quiz' | 'viewer') => {
+  const handleStart = (selectedMode: 'quiz' | 'viewer' | 'game') => {
     let hanjasToProcess: Hanja[] = [];
 
     if (selectedPresets.length > 0) {
