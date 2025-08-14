@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { HanjaQuiz } from './components/HanjaQuiz';
 import { HanjaViewer } from './components/HanjaViewer';
+import { HanjaGame } from './components/HanjaGame';
 
 interface Hanja {
   id: number;
@@ -14,11 +15,12 @@ interface Hanja {
 export default function Home() {
   const [startNumber, setStartNumber] = useState<number | string>('');
   const [endNumber, setEndNumber] = useState<number | string>('');
-  const [mode, setMode] = useState<'input' | 'quiz' | 'viewer'>('input');
+  const [mode, setMode] = useState<'input' | 'quiz' | 'viewer' | 'game'>('input');
   const [selectedPresets, setSelectedPresets] = useState<number[]>([]);
   const [allHanjas, setAllHanjas] = useState<Hanja[]>([]);
   const [hanjasForQuiz, setHanjasForQuiz] = useState<Hanja[]>([]);
   const [hanjasForViewer, setHanjasForViewer] = useState<Hanja[]>([]); // Changed to Hanja array
+  const [hanjasForGame, setHanjasForGame] = useState<Hanja[]>([]);
 
   useEffect(() => {
     // Fetch all hanjas once when the component mounts
@@ -78,17 +80,20 @@ export default function Home() {
 
     if (selectedMode === 'quiz') {
       setHanjasForQuiz(hanjasToProcess);
-    } else { // viewer mode
+    } else if (selectedMode === 'viewer') { // viewer mode
       setHanjasForViewer(hanjasToProcess);
+    } else { // game mode
+      setHanjasForGame(hanjasToProcess);
     }
     setMode(selectedMode);
   };
 
   const handleBackToInput = () => {
     setMode('input');
-    // Reset quiz/viewer data but keep selections for convenience
+    // Reset quiz/viewer/game data but keep selections for convenience
     setHanjasForQuiz([]);
     setHanjasForViewer([]);
+    setHanjasForGame([]);
   };
 
   return (
@@ -149,7 +154,8 @@ export default function Home() {
           )}
 
           <div className="d-grid gap-2 mt-4">
-            <button type="button" className="btn btn-primary btn-lg" onClick={() => handleStart('quiz')}>학습 시작</button>
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => handleStart('quiz')}>퀴즈 학습 시작</button>
+            <button type="button" className="btn btn-success btn-lg" onClick={() => handleStart('game')}>게임 학습 시작</button>
             <button type="button" className="btn btn-info btn-lg" onClick={() => handleStart('viewer')}>열람하기</button>
           </div>
         </div>
@@ -164,6 +170,12 @@ export default function Home() {
       {mode === 'viewer' && (
         <div className="mt-5">
           <HanjaViewer hanjasToView={hanjasForViewer} onBack={handleBackToInput} />
+        </div>
+      )}
+
+      {mode === 'game' && (
+        <div className="mt-5">
+          <HanjaGame hanjasToGame={hanjasForGame} onGameEnd={handleBackToInput} />
         </div>
       )}
     </div>
