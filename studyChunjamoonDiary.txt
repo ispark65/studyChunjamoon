@@ -88,6 +88,10 @@ git checkout v1.1.1
 npm run dev
 npm run build
 github 등록
+git add
+git commit -m "..."
+git tag v1.2.0
+git push origin main
 git push origin v1.2.0
 
 
