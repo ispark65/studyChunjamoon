@@ -56,7 +56,6 @@ export const HanjaGame: React.FC<HanjaGameProps> = ({ hanjasToGame, onGameEnd })
 
   const handleStartGame = useCallback(() => {
     setTime(0);
-    setCorrectCount(0);
     setSelectedButtonIndex(null);
     setShowWinAnimation(false);
 
@@ -71,8 +70,19 @@ export const HanjaGame: React.FC<HanjaGameProps> = ({ hanjasToGame, onGameEnd })
 
     let selectedHanjas: Hanja[] = [];
     const groups: Hanja[][] = [];
-    for (let i = 0; i <= availableHanjas.length - 8; i += 8) {
-      groups.push(availableHanjas.slice(i, i + 8));
+    if (availableHanjas.length > 0) {
+      // 1000자 중 8자씩 묶음으로 그룹화하기 위해, 선택된 범위 내에서 올바른 시작 위치를 계산합니다.
+      const firstHanjaId = availableHanjas[0].id;
+      const offset = (firstHanjaId - 1) % 8;
+      const startIndex = offset === 0 ? 0 : 8 - offset;
+
+      for (let i = startIndex; i <= availableHanjas.length - 8; i += 8) {
+        const group = availableHanjas.slice(i, i + 8);
+        // 그룹이 완전하고 올바르게 정렬되었는지 확인합니다.
+        if (group.length === 8 && (group[0].id - 1) % 8 === 0) {
+          groups.push(group);
+        }
+      }
     }
 
     if (groups.length < numGroups) {
@@ -101,43 +111,75 @@ export const HanjaGame: React.FC<HanjaGameProps> = ({ hanjasToGame, onGameEnd })
 
     setGameHanjas(selectedHanjas);
 
-    const shuffledHanjas = [...selectedHanjas];
+    const boardHanjas = [...selectedHanjas];
 
-    // Difficulty logic
-    if (difficulty === 1) { // 20 correct, based on groups of 2
-        const correctIndices = new Set<number>();
-        const groupsOfTwo = Array.from({ length: numHanjas / 2 }, (_, i) => i * 2);
-        groupsOfTwo.forEach(startIdx => {
-            const randInGroup = Math.floor(Math.random() * 2);
-            correctIndices.add(startIdx + randInGroup);
-        });
-        const incorrectIndices = Array.from({ length: numHanjas }, (_, i) => i).filter(i => !correctIndices.has(i));
-        const incorrectHanjas = incorrectIndices.map(i => shuffledHanjas[i]);
-        const shuffledIncorrectHanjas = [...incorrectHanjas].sort(() => Math.random() - 0.5);
-        incorrectIndices.forEach((originalIndex, i) => {
-            shuffledHanjas[originalIndex] = shuffledIncorrectHanjas[i];
-        });
-    } else if (difficulty === 2) { // 10 correct
-        const correctIndices = new Set<number>();
-        const groupsOfFour = Array.from({ length: numHanjas / 4 }, (_, i) => i * 4);
-        groupsOfFour.forEach(startIdx => {
-            const randInGroup = Math.floor(Math.random() * 4);
-            correctIndices.add(startIdx + randInGroup);
-        });
-        const incorrectIndices = Array.from({ length: numHanjas }, (_, i) => i).filter(i => !correctIndices.has(i));
-        const incorrectHanjas = incorrectIndices.map(i => shuffledHanjas[i]);
-        const shuffledIncorrectHanjas = [...incorrectHanjas].sort(() => Math.random() - 0.5);
-        incorrectIndices.forEach((originalIndex, i) => {
-            shuffledHanjas[originalIndex] = shuffledIncorrectHanjas[i];
-        });
-    } else { // difficulty 3 - Fisher-Yates shuffle
-        for (let i = shuffledHanjas.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledHanjas[i], shuffledHanjas[j]] = [shuffledHanjas[j], shuffledHanjas[i]];
+    // Difficulty-based shuffling with derangement
+    if (difficulty === 3) {
+      // Difficulty 3: Full derangement of all hanjas
+      let isDeranged = false;
+      while (!isDeranged) {
+        for (let i = boardHanjas.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [boardHanjas[i], boardHanjas[j]] = [boardHanjas[j], boardHanjas[i]];
         }
+        let hasFixedPoint = false;
+        for (let i = 0; i < boardHanjas.length; i++) {
+          if (boardHanjas[i].id === selectedHanjas[i].id) {
+            hasFixedPoint = true;
+            break;
+          }
+        }
+        if (!hasFixedPoint) {
+          isDeranged = true;
+        }
+      }
+    } else {
+      // Difficulty 1 & 2: Keep some correct, derange the rest
+      const correctIndices = new Set<number>();
+      const groupSize = difficulty === 1 ? 2 : 4;
+      const numGroupsInBoard = Math.floor(numHanjas / groupSize);
+
+      for (let i = 0; i < numGroupsInBoard; i++) {
+        const startIdx = i * groupSize;
+        const randInGroup = Math.floor(Math.random() * groupSize);
+        correctIndices.add(startIdx + randInGroup);
+      }
+
+      const incorrectIndices = Array.from({ length: numHanjas }, (_, i) => i).filter(i => !correctIndices.has(i));
+      const incorrectHanjas = incorrectIndices.map(i => selectedHanjas[i]);
+      
+      const derangedIncorrectHanjas = [...incorrectHanjas];
+      if (derangedIncorrectHanjas.length > 1) {
+        let isDeranged = false;
+        while (!isDeranged) {
+          for (let i = derangedIncorrectHanjas.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [derangedIncorrectHanjas[i], derangedIncorrectHanjas[j]] = [derangedIncorrectHanjas[j], derangedIncorrectHanjas[i]];
+          }
+          let hasFixedPoint = false;
+          for (let i = 0; i < derangedIncorrectHanjas.length; i++) {
+            if (derangedIncorrectHanjas[i].id === incorrectHanjas[i].id) {
+              hasFixedPoint = true;
+              break;
+            }
+          }
+          if (!hasFixedPoint) {
+            isDeranged = true;
+          }
+        }
+      }
+
+      incorrectIndices.forEach((originalIndex, i) => {
+        boardHanjas[originalIndex] = derangedIncorrectHanjas[i];
+      });
     }
 
-    setBoardHanjas(shuffledHanjas);
+    const initialCorrectCount = boardHanjas.reduce((count, hanja, i) => {
+      return count + (hanja.id === selectedHanjas[i].id ? 1 : 0);
+    }, 0);
+    setCorrectCount(initialCorrectCount);
+
+    setBoardHanjas(boardHanjas);
     setGameState('running');
   }, [hanjasToGame, sequential, difficulty, lines]);
 
