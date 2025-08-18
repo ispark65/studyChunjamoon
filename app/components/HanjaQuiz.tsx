@@ -46,37 +46,40 @@ export const HanjaQuiz: React.FC<HanjaQuizProps> = ({ hanjasToQuiz, onQuizEnd })
     setIsCorrect(null);
 
     const correctOption = `${hanja.sound} / ${hanja.meaning}`;
-    const allOtherHanjas = hanjaList.filter(h => h.id !== hanja.id);
-    const incorrectOptions: string[] = [];
-
-    while (incorrectOptions.length < 3 && allOtherHanjas.length > 0) {
-      const randomIndex = Math.floor(Math.random() * allOtherHanjas.length);
-      const randomHanja = allOtherHanjas[randomIndex];
-      const randomOption = `${randomHanja.sound} / ${randomHanja.meaning}`;
-      
-      if (!incorrectOptions.includes(randomOption) && randomOption !== correctOption) {
-        incorrectOptions.push(randomOption);
-      }
-      // Prevent infinite loops if not enough unique options are available
-      allOtherHanjas.splice(randomIndex, 1);
-    }
     
-    // Fill remaining options if not enough unique ones were found
+    const otherOptions = shuffleArray(
+      hanjaList
+        .filter(h => h.id !== hanja.id)
+        .map(h => `${h.sound} / ${h.meaning}`)
+    );
+
+    const incorrectOptions = [...new Set(otherOptions.filter(o => o !== correctOption))].slice(0, 3);
+
     while (incorrectOptions.length < 3) {
-        incorrectOptions.push(`오답 ${incorrectOptions.length + 1}`);
+      incorrectOptions.push(`오답 ${incorrectOptions.length + 1}`);
     }
 
-    const allOptions = [correctOption, ...incorrectOptions];
-    setOptions(shuffleArray(allOptions));
+    const allOptions = shuffleArray([correctOption, ...incorrectOptions]);
+    setOptions(allOptions);
   }, []);
 
   useEffect(() => {
-    // The parent component now provides the hanjas. We just shuffle and start.
     if (hanjasToQuiz.length > 0) {
-      const shuffled = shuffleArray(hanjasToQuiz);
-      const selectedForQuiz = shuffled.slice(0, 20); // Take up to 20
-      setQuizHanjas(selectedForQuiz);
-      loadNewQuestion(selectedForQuiz, 0);
+      // Filter out hanjas with empty character, sound, or meaning
+      const validHanjas = hanjasToQuiz.filter(h => 
+        h.character && h.character.trim() !== '' &&
+        h.sound && h.sound.trim() !== '' &&
+        h.meaning && h.meaning.trim() !== ''
+      );
+
+      if (validHanjas.length > 0) {
+        const shuffled = shuffleArray(validHanjas);
+        const selectedForQuiz = shuffled.slice(0, 20); // Take up to 20
+        setQuizHanjas(selectedForQuiz);
+        loadNewQuestion(selectedForQuiz, 0);
+      } else {
+        setQuizFinished(true); // No valid hanjas to quiz
+      }
     } else {
       setQuizFinished(true); // No hanjas provided, end quiz.
     }
