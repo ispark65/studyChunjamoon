@@ -175,7 +175,7 @@ git push origin v1.2.2
 "해와 달이 차고 기울며 별은 자리를 잡아 늘어서 있다."는 "일월영측 진숙열장"에 해당하는 의미임.
 다른 것들도 모두 동일한 오류가 있으니, 지금 의미를 분리해서 다시 정렬해줘.
 
-app\components\HanjaViewer.tsx 검토 및 보완, 덕건명립 형단표정까지 마침
+app\components\HanjaViewer.tsx 검토 및 보완, 존이감당 거이익영까지 마침
 
 
 
