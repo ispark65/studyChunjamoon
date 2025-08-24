@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Hanja {
   id: number;
@@ -14,7 +14,137 @@ interface HanjaViewerProps {
   onBack: () => void;
 }
 
+const meanings: { [key: number]: { full: string } } = {
+  0: { full: '하늘은 검고 땅은 누르며 우주는 넓고도 크다. 이는 하늘과 땅의 시초를 말한 것이다.' },
+  1: { full: '해와 달이 차고 기울며 별은 자리를 잡아 늘어서 있다.' },
+  2: { full: '추위가 오고 더위가 가니 가을엔 거두고 겨울엔 갈무리하여 둔다. 4계절이 서로 교대함을 말한 것이다.' },
+  3: { full: '윤달을 더하여 한해를 이루고 가락을 맞추어 양기를 돋운다.' },
+  4: { full: '구름은 올라가 비가 되고 이슬은 얼어 서리가 된다.' },
+  5: { full: '금은 여수에서 나고 옥은 곤강에서 난다.' },
+  6: { full: '검으로 이름난 것은 거궐이며, 구슬로 이름난 것은 야광주다.' },
+  7: { full: '과일 가운데 진미는 오얏과 능금이요 채소 가운데 중요한 것은 겨자와 생강이라.' },
+  8: { full: '바다는 짜고 강물은 싱거우며 비늘 달린 물고기는 물에 잠기고 깃 달린 새는 높이 난다.' },
+  9: { full: 용은 복희[伏羲], 불은 신농[神農], 새는 소호[少昊]가 관직으로 이름했고, 황제[黃帝]에 이르러 인문이 갖추어 졌다.' },
+  10: { full: '비로소 문자를 지었고, 이에 웃옷과 치마를 입었다.' },
+  11: { full: '天子의 지위를 미루어 주고 나라를 사양한 이는 유우(舜)와 도당(堯)이다.' },
+  12: { full: '백성을 돕고 죄를 벌하니 주나라 무왕과 은나라 탕왕이라.' },
+  13: { full: '조정에 앉아 도를 물으니, 옷을 늘어뜨리고 손을 맞잡아 공평하고 밝게 다스리다.' },
+  14: { full: '검은머리 백성을 사랑하여 기르고, 오랑캐들을 신하로 복종하게 한다.' },
+  15: { full: '멀고 가까운 곳을 한 몸으로 여기면, 거느리고 손님으로 와서 왕에게 복종하여 귀의한다.' },
+  16: { full: '봉황은 나무에 내려 울고 흰망아지 마당의 풀을 먹는다.' },
+  17: { full: '덕화[德化]가 초목까지 미치고 덕의 이로움이 모든 곳에 미친다.' },
+  18: { full: '무릇[蓋此] 이 몸과 털은 네 가지 큰 것과 다섯 가지 떳떳함이 있다.' },
+  19: { full: '길러준 은혜를 공경하여 감히 상처를 내지 말아야 한다.' },
+  20: { full: '여자는 뜻이 바르고 행실이 충직함을 사모하고, 남자는 재주와 어짊이 있는 이를 본받아야 한다.' },
+  21: { full: '잘못이 있으면 반드시 고치고 배운 것은 잊지 말아야 한다.' },
+  22: { full: '다른이의 단점을 입에 담지 말고 자신의 장점을 너무 믿지 마라.' },
+  23: { full: '약속은 실천할 수 있게 하고, 기량은 헤아리기 어렵도록 크게 한다.' },
+  24: { full: '묵자는 실이 물들 듯 나빠지는 것을 슬퍼하였고, 시경[詩經]에서는 〈羔羊〉편의 절검[節儉]과 정직[正直]을 찬미하였다.' },
+  25: { full: '대도[大道]를 행하면 현자[賢者]가 되고, 능히 생각하면 성인[聖人]이 된다.' },
+  26: { full: '덕을 쌓으면 이름을 세울수 있고 몸이 단정하면 겉으로 드러난 용모도 바르게 된다.' },
+  27: { full: '빈 골짜기에 울리는 소리처럼 또한 빈집에서 들리는 소리처럼' },
+  28: { full: '화는 악행을 쌓은 것이 원인이요 복은 선행의 결과이다.' },
+  29: { full: '커다란 옥 구슬이 보배가 아니니 작은 시간을 경주하여야 하여라.' },
+  30: { full: '부모를 모시고 임금을 섬기는 것은 엄정하면서도 정성스러워야 하는 것이니' },
+  31: { full: '효도는 마땅히 온 힘을 다해야 하고 충성은 목숨도 바쳐야 하는 것이다.' },
+  32: { full: '깊은 곳을 만나도 살얼음 지나듯 조심하고 일찍 일어나 덥고 차가운지 살피는 것(이 효도하는 마음가짐이며)' },
+  33: { full: '난초와 같이 향기롭고 소나무처럼 굳센 것(이 충성하는 마음가짐이다.)' },
+  34: { full: '냇물을 쉬지 않고 흐르고 연못은 맑아 그림자를 비추듯' },
+  35: { full: '얼굴은 생각과 같게 하고 말은 안정되게 하여야 한다.' },
+  36: { full: '일을 시작할 때에 정성을 다하고 마무리 지을 때에도 신중히 하면' },
+  37: { full: '이를 바탕으로 이루는 업적이 끝없으리라.' },
+  38: { full: '학문이 뛰어나 벼슬에 올라 직무를 맞고 정사를 돌볼 때에' },
+  39: { full: '벼슬을 맡아 팥배나무 밑에서 정사를 본 소공과 같이 청렴하면 물러날 때 칭송을 들을 것이다.' },
+  40: { full: '즐거움에 귀천이 없으나 예절에는 존비가 있으니' },
+  41: { full: '상하가 화목하고 부부가 원만하며' },
+  42: { full: '밖에서는 스승의 가르침을 받고 안에서는 어머니의 뜻을 받을며' },
+  43: { full: '모든 고모 삼촌의 아이를 내 아이라 여기고' },
+  44: { full: '형제는 서로 품어주니 같은 기운에서 나온 가지기 때문이고' },
+  45: { full: '벗을 사귈 때는 가려서 사귀고 규범을 염두에 두어 절제하여' },
+  46: { full: '어질고 자비로운 마음으로 대하여 떠나지 말아야 하고' },
+  47: { full: '절의를 지키고 청렴히 물러나 이러한 (예의가) 이지러지지 않게 하여야 한다.' },
+  48: { full: '성정이 고요하면 심정이 편안하고 마음이 동요하면 정신이 피로하니' },
+  49: { full: '참 뜻이 가득하도록 지키고 물욕을 멀리하라.' },
+  50: { full: '우아하고 절개가 있으면 관작은 스스로 오게 되어 있다.' },
+  51: { full: '화하의 도읍은 동서 2경이라' },
+  52: { full: '낙양은 북망산을 등지고 낙수를 마주하고 장안에는 위수와 경수가 흐르는 구나.' },
+  53: { full: '궁전은 울창한 숲에 쌓였고 누각에 올라 놀라운 경치를 보며' },
+  54: { full: '날짐승 들짐승을 그리니 신선 사는 그림이로구나.' },
+  55: { full: '병사 옆을 열어 갑장이 기둥을 마주하게 하고' },
+  56: { full: '자리를 마련해 연회를 열고 비파를 뜯고 생황을 부니' },
+  57: { full: '계단을 올라 납폐하는 신료들은 별인듯 번쩍이고' },
+  58: { full: '오른쪽은 광내로 통하고 왼쪽은 승명에 닿아' },
+  59: { full: '이미 분전을 모은 곳에 영웅들이 모였도다.' },
+  60: { full: '두고와 종례의 글 칠서와 벽경' },
+  61: { full: '각 부에 장군과 재상이 있어 고관이 즐비하여 길이 좁다.' },
+  62: { full: '여덟 고을을 봉지로 주고 천명의 군사로 지키게 하니' },
+  63: { full: '높은 관을 쓰고 수레에올라 바퀴를 구르며 갓끈을 떨치는 구나.' },
+  64: { full: '대대로 받는 녹으로 부귀를 누리며 수레는 (제물로) 무겁고 가마는 가벼우니' },
+  65: { full: '끝없이 쌓은 공적 비석에 세기는 구나.' },
+  66: { full: '반계의 (태공망)과 (탕왕을 도운) 이윤은 때가 도와 아형의 벼슬에 올랐고' },
+  67: { full: '곡부에 궁전을 지은 것은 주공 단이 아니면 누가할 것인가' },
+  68: { full: '환공은 제후를 널리 합쳐 기울어져가는 나라를 구했지' },
+  69: { full: '기리계가 한 혜제를 회복시키고 부열이 무정을 감동시키듯.' },
+  70: { full: '준걸과 예사가 모이니 참으로 평안하구나.' },
+  71: { full: '진과 초가 다시 패자가 되고 조와위는 연횡으로 곤궁에 빠져' },
+  72: { full: '진은 위계를 써 괵을 멸하고 천토에서 회맹하였고' },
+  73: { full: '어찌 (한고조의) 약법을 두고 한비자의 낡고 번잡한 형벌을 따를 것인가' },
+  74: { full: '백기 왕전 염파 이목은 군사를 가장 잘 다루었고' },
+  75: { full: '위엄을 사막에까지 떨치니 단청에 넣어 기리는 구나.' },
+  76: { full: '하우씨가 구주를 두어 백군이 진에 병합되고' },
+  77: { full: '산중 으뜸은 항산과 태산이라 임금을 정하는 운정이 그곳에 있으며' },
+  78: { full: '안문관과 만리장성, 계전과 적성' },
+  79: { full: '운남의 곤지와 부평의 갈석, 거야의 넓은 들판과 동정의 큰 호수' },
+  80: { full: '아득히 멀리 줄지어 있으니 아득하고 묘연하구나.' },
+  81: { full: '다스림의 근본은 농업이니 때를 맞추어 심고 거두어야 하리' },
+  82: { full: '이제 남쪽 이랑을 일궈 나는 기장과 피를 가꾸어' },
+  83: { full: '익으면 세를 내고 햇곡식으로 제사를 지내 상을 권하고 (못된 자는) 내쫓으리라.' },
+  84: { full: '맹자는 도타운 사람이었고 사어는 강직했으니' },
+  85: { full: '중용을 으뜸으로 삼고 겸손에 힘쓰고 경계해야지' },
+  86: { full: '들리는 소리 자세히 살피고 거울에 비치는 모양 꼼꼼히 구별하고' },
+  87: { full: '그 아름다움이 후세에 미치도록 그 덕을 쌓기를 부지런히 하며' },
+  88: { full: '몸을 살펴 나무라고 탓할 일은 없는지 반성하고 총애가 늘면 더욱 조심하여야 한다.' },
+  89: { full: '위태로운 치욕은 부끄러운 일에 의한 것이니 수풀과 언덕에 있는 것이 도리어 다행이다.' },
+  90: { full: '양소는 기회를 보아 관복을 벗으니 누가 핍박하였으랴' },
+  91: { full: '한가한 곳을 찾아 살며 고요히 살며 침묵한 채' },
+  92: { full: '옛일을 두고 논장을 찾고 염려를 잊고 소요하니' },
+  93: { full: '기쁜 일은 알리고 누추한 것은 보내며 슬픈 일은 마다하고 기쁜 일을 환영하리' },
+  94: { full: '도랑에 핀 연꽃의 이력, 동산에 자란 풀 가지' },
+  95: { full: '비파나무 만추에도 푸르른데 오동나무 일찍이 시들었고' },
+  96: { full: '고목 뿌리 덮은 낙엽 바람에 날리니' },
+  97: { full: '댓닭 한 마리 홀로 해엄치며 노을진 하늘을 업수이 여기고' },
+  98: { full: '(한나라 왕총은) 독서를 즐겨 한 번 보면 상자에 넣은 듯 (잊지 않았다지)' },
+  99: { full: '가벼이 경솔하게 구는 것을 두려워하는 까닭은 담장에도 귀가 있다 하기 때문' },
+  100: { full: '반찬이나 저녁밥이야 먹고 배를 채우면 그만인 것' },
+  101: { full: '배부르면 재상의 요리도 물리게 되고 배 고프면 겨 지게미로도 족하니' },
+  102: { full: '친척이나 옛친구 노소에 따라 음식도 다를 밖에' },
+  103: { full: '아내가 길쌈하여 어른 방에 수건을 받들고' },
+  104: { full: '흰 비단으로 지은 부채 둥글고 깨끗하며 은촛대 불빛 밝으니' },
+  105: { full: '낮에 자고 저녁에 또 자려 푸른 대로 코끼리 침상을 만들지' },
+  106: { full: '거문거를 뜯고 노래를 부르며 주연을 열고 술잔을 들어 부딛히고' },
+  107: { full: '손을 들고 발을 움직여 춤추며 이처럼 평안함을 즐거워하세' },
+  108: { full: '맏이는 뒤를 이어 제사를 지내어' },
+  109: { full: '이마를 조아려 두 번 절하여 송구하고 두려운 마음을 보여야 한다.' },
+  110: { full: '편지는 간략히 요지만 쓰고 답신은 자세히 살펴서 하라.' },
+  111: { full: '몸에 때가 끼면 목욕할 생각이 나고 열이 차면 서늘하기를 원하게 되는 것' },
+  112: { full: '노새며 망아지, 숫송아지가 놀라뛰며 내달리듯' },
+  113: { full: '적도는 잡아 죽이고 배역자는 잡아들이리' },
+  114: { full: '여포는 활 잘 쏘았고 의료는 돌 잘 던졌으며 혜강은 금을 잘켰고 완적은 휘파람을 잘 불었지' },
+  115: { full: '붓을 만든 건 몽념 종이를 만든 건 채륜, 마륜의 교묘한 솜씨 임공자의 낚시대' },
+  116: { full: '이러한 재주를 세상에 푸니 모두다 뛰어나고 신기하였다.' },
+  117: { full: '오나라 모타와 월나라 서시의 자태는 찡그린 모습도 아름다워라' },
+  118: { full: '세월은 살같이 언제나 제촉하나 햇빛 달빛은 밝게 빛나' },
+  119: { full: '천문을 보는 기계 매달려 돌듯 그믐이 지나 다시 보름이 되니' },
+  120: { full: '손가락에 섶불을 단 듯 수양에 전념하면 영원토록 평안하고 길하리라.' },
+  121: { full: '반듯하게 걸으며 옷길을 끌고 사당에 엎드려 예의를 다하고' },
+  122: { full: '허리띠를 단단히 묶어 긍지를 갖고 여러 곳을 두루 살펴라' },
+  123: { full: '(이런 글을 쓴 나는) 고루하고 들은 것 없어 어리석단 꾸짖음을 면치 못하리' },
+  124: { full: '어조사에는 언재호야가 있다.' },
+};
+
 export const HanjaViewer: React.FC<HanjaViewerProps> = ({ hanjasToView, onBack }) => {
+  const [viewMode, setViewMode] = useState('soundAndMeaning');
+
   if (!hanjasToView || hanjasToView.length === 0) {
     return (
       <div className="card p-4 shadow-sm text-center">
@@ -35,28 +165,65 @@ export const HanjaViewer: React.FC<HanjaViewerProps> = ({ hanjasToView, onBack }
 
   const groupIds = Object.keys(hanjasByGroup).map(Number).sort((a, b) => a - b);
 
+  const renderHanjaContent = (hanja: Hanja) => {
+    switch (viewMode) {
+      case 'hanjaOnly':
+        return <p className="fs-1 fw-bold mb-1">{hanja.character}</p>;
+      case 'withMeaning':
+      case 'soundAndMeaning':
+      default:
+        return (
+          <>
+            <p className="fs-1 fw-bold mb-1">{hanja.character}</p>
+            <p className="mb-0">음: {hanja.sound}</p>
+            <p className="mb-0">훈: {hanja.meaning}</p>
+          </>
+        );
+    }
+  };
+
   return (
     <div className="card p-4 shadow-sm">
-      <h2 className="card-title text-center mb-4">천자문 열람</h2>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div style={{ width: '200px' }}>
+          <select className="form-select form-select-sm" value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+            <option value="soundAndMeaning">음과훈 보기</option>
+            <option value="withMeaning">의미함께 보기</option>
+            <option value="hanjaOnly">한자만 보기</option>
+          </select>
+        </div>
+        <h2 className="card-title text-center flex-grow-1 mb-0">천자문 열람</h2>
+      </div>
+
       <div className="hanja-viewer">
-        {groupIds.map(groupId => (
-          <div key={groupId} className="hanja-row d-flex justify-content-around mb-3">
-            {Array.from({ length: 8 }).map((_, index) => {
-              const hanja = hanjasByGroup[groupId].find(h => (h.id - 1) % 8 === index);
-              if (hanja) {
-                return (
-                  <div key={hanja.id} className="hanja-item border p-2 rounded text-center" style={{ flex: '1' }}>
-                    <p className="fs-1 fw-bold mb-1">{hanja.character}</p>
-                    <p className="mb-0">음: {hanja.sound}</p>
-                    <p className="mb-0">훈: {hanja.meaning}</p>
+        {groupIds.map(groupId => {
+          const meaning = meanings[groupId];
+          return (
+            <div key={groupId} className="mb-4">
+              <div className="hanja-row d-flex justify-content-around mb-0">
+                {Array.from({ length: 8 }).map((_, index) => {
+                  const hanja = hanjasByGroup[groupId]?.find(h => (h.id - 1) % 8 === index);
+                  if (hanja) {
+                    return (
+                      <div key={hanja.id} className="hanja-item border p-2 rounded-top text-center" style={{ flex: '1' }}>
+                        {renderHanjaContent(hanja)}
+                      </div>
+                    );
+                  } else {
+                    return <div key={index} className="hanja-item-placeholder p-2 text-center" style={{ flex: '1' }} />;
+                  }
+                })}
+              </div>
+              {viewMode === 'withMeaning' && meaning && (
+                <div className="row g-0">
+                  <div className="col-12 border border-top-0 p-2 rounded-bottom">
+                    <p className="text-center mb-0">{meaning.full}</p>
                   </div>
-                );
-              } else {
-                return <div key={index} className="hanja-item-placeholder p-2 text-center" style={{ flex: '1' }} />;
-              }
-            })}
-          </div>
-        ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <button className="btn btn-secondary mt-4 w-100" onClick={onBack}>돌아가기</button>
     </div>
