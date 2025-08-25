@@ -199,7 +199,7 @@
 {"id": 198, "character": "讚", "sound": "찬", "meaning": "기릴"},
 {"id": 199, "character": "羔", "sound": "고", "meaning": "새끼양"},
 {"id": 200, "character": "羊", "sound": "양", "meaning": "양"},
-{"id": 201, "character": "景", "sound": "경", "meaning": "경치"},
+{"id": 201, "character": "景", "sound": "경", "meaning": "경치/클"},
 {"id": 202, "character": "行", "sound": "행", "meaning": "갈"},
 {"id": 203, "character": "維", "sound": "유", "meaning": "벼리"},
 {"id": 204, "character": "賢", "sound": "현", "meaning": "어질"},
