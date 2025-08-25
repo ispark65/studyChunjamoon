@@ -299,7 +299,7 @@
   {"id": 298, "character": "業", "sound": "업", "meaning": "업"},
   {"id": 299, "character": "所", "sound": "소", "meaning": "바/곳"},
   {"id": 300, "character": "基", "sound": "기", "meaning": "터/기본"},
-  {"id": 301, "character": "籍", "sound": "자", "meaning": "온화할"},
+  {"id": 301, "character": "籍", "sound": "적", "meaning": "문서"},
   {"id": 302, "character": "甚", "sound": "심", "meaning": "심할"},
   {"id": 303, "character": "無", "sound": "무", "meaning": "없을"},
   {"id": 304, "character": "竟", "sound": "경", "meaning": "끝/마칠"},
