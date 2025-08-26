@@ -150,7 +150,7 @@ git push origin main
 git push origin v1.2.2
 
 
-20250823 (토)
+20250823~24 (토~일)
 ----------------
 열람하기 화면에서 선택창을 만들고, "음과훈 보기"와 "의미함께 보기", "한자만 보기" 3개를 선택할 수 있도록 구성.
 "음과훈 보기"는 기본으로 지금처럼 표시가 나오도록 구성.
@@ -177,7 +177,18 @@ git push origin v1.2.2
 
 app\components\HanjaViewer.tsx 검토 및 보완, 존이감당 거이익영까지 마침
 
+git add, commit
+git push
 
+20250825 (월)
+----------------
+(회사) public/thousand_characters.json 수정이 github에 반영 안되어 있어서 git pull 실패
+git add, commit 하고
+git pull    ok
+
+20250826 (화)
+----------------
+HanjaViewer.tsx 수정. 싱화하목 부창부수
 
 
 
