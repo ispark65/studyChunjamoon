@@ -188,7 +188,12 @@ git pull    ok
 
 20250826 (화)
 ----------------
-HanjaViewer.tsx 수정. 싱화하목 부창부수
+HanjaViewer.tsx 수정. 인자은측 조차불리
+
+thousand_characters.json 381 부터 384까지 "전패비휴" 자리이나 빠져 있음.
+일단 "전패비휴"를 997~1000 에 기입함. 순서 조정 필요.
+
+
 
 
 
