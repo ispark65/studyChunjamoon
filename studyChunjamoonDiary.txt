@@ -194,6 +194,21 @@ thousand_characters.json 381 부터 384까지 "전패비휴" 자리이나 빠져
 일단 "전패비휴"를 997~1000 에 기입함. 순서 조정 필요.
 
 
+20250826 (수)
+----------------
+thousand_characters.json  번호정렬, gemini로 진행
+=> 999번과 1000번 글자 없음.
+=> id 603에서 "사막"이 한 글자씩 분리 안되어 있음. 원래부터 그렇게 되어 있던걸로 보임.
+=> 새로 종렬한 파일에서는 id 816과 817 사이에 "친척 척" 빠져 있으나 이전 파일에선 존재함을 확인.
+
+고로 수동으로 어제 백업했던 thousand_characters.json 파일에서 수정함
+
+git add, commit
+git tag v1.2.3
+git push origin main
+git push origin v1.2.3
+
+
 
 
 
