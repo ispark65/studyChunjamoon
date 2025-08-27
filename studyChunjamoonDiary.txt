@@ -208,8 +208,14 @@ git tag v1.2.3
 git push origin main
 git push origin v1.2.3
 
+thousand_characters.json 수정
+HanjaViewer.tsx 수정
 
 
+
+
+
+https://m.blog.naver.com/PostList.naver?blogId=sriveryi&categoryName=%E5%A4%A9%E5%AD%97%E6%96%87&categoryNo=69&logCode=0&tab=1
 
 
 git fetch
