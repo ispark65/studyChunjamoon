@@ -112,12 +112,35 @@ export const HanjaQuiz: React.FC<HanjaQuizProps> = ({ hanjasToQuiz, onQuizEnd })
     setCurrentHanja(null);
   };
 
+  const handleRestart = useCallback(() => {
+    setQuizFinished(false);
+    setQuizExited(false);
+    setQuizIndex(0);
+    setCorrectAnswersCount(0);
+    
+    const validHanjas = hanjasToQuiz.filter(h => 
+      h.character && h.character.trim() !== '' &&
+      h.sound && h.sound.trim() !== '' &&
+      h.meaning && h.meaning.trim() !== ''
+    );
+
+    if (validHanjas.length > 0) {
+      const shuffled = shuffleArray(validHanjas);
+      const selectedForQuiz = shuffled.slice(0, 20);
+      setQuizHanjas(selectedForQuiz);
+      loadNewQuestion(selectedForQuiz, 0);
+    } else {
+      setQuizFinished(true); 
+    }
+  }, [hanjasToQuiz, loadNewQuestion]);
+
   if (quizFinished || quizExited) {
     return (
       <div className="card p-4 shadow-sm text-center">
         <h2 className="mb-4">퀴즈 종료!</h2>
         <p className="fs-4">총 {quizHanjas.length} 문제 중 {correctAnswersCount} 문제 정답!</p>
-        <button className="btn btn-primary mt-3" onClick={onQuizEnd}>돌아가기</button>
+        <button className="btn btn-primary mt-3 me-2" onClick={handleRestart}>다시 시작</button>
+        <button className="btn btn-secondary mt-3" onClick={onQuizEnd}>돌아가기</button>
       </div>
     );
   }

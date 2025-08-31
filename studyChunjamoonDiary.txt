@@ -211,6 +211,15 @@ git push origin v1.2.3
 thousand_characters.json 수정
 HanjaViewer.tsx 수정
 
+20250831 (일)
+----------------
+퀴즈 학습에서 20문항 종료 후 다시시작 버튼 추가함
+app/components/HanjaQuiz.tsx 수정
+
+git add, commit
+git tag v1.2.4
+git push origin main
+git push origin v1.2.4
 
 
 
