@@ -221,6 +221,12 @@ git tag v1.2.4
 git push origin main
 git push origin v1.2.4
 
+~20250903 (수)
+----------------
+thousand_characters.json 수정
+HanjaViewer.tsx 수정
+
+
 
 
 
