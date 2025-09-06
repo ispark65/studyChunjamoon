@@ -12,6 +12,12 @@ interface Hanja {
   meaning: string;
 }
 
+interface PresetRange {
+  start: number;
+  end: number;
+  label: string;
+}
+
 export default function Home() {
   const [startNumber, setStartNumber] = useState<number | string>('');
   const [endNumber, setEndNumber] = useState<number | string>('');
@@ -19,11 +25,18 @@ export default function Home() {
   const [selectedPresets, setSelectedPresets] = useState<number[]>([]);
   const [allHanjas, setAllHanjas] = useState<Hanja[]>([]);
   const [hanjasForQuiz, setHanjasForQuiz] = useState<Hanja[]>([]);
-  const [hanjasForViewer, setHanjasForViewer] = useState<Hanja[]>([]); // Changed to Hanja array
+  const [hanjasForViewer, setHanjasForViewer] = useState<Hanja[]>([]);
   const [hanjasForGame, setHanjasForGame] = useState<Hanja[]>([]);
 
+  const initialPresetRanges: PresetRange[] = Array.from({ length: 10 }, (_, i) => ({
+    start: i * 100 + 1,
+    end: (i + 1) * 100,
+    label: `${i * 100 + 1}~${(i + 1) * 100}`,
+  }));
+
+  const [editablePresetRanges, setEditablePresetRanges] = useState<PresetRange[]>(initialPresetRanges);
+
   useEffect(() => {
-    // Fetch all hanjas once when the component mounts
     const fetchAllHanjas = async () => {
       try {
         const response = await fetch('/thousand_characters.json');
@@ -37,18 +50,18 @@ export default function Home() {
     fetchAllHanjas();
   }, []);
 
-  const presetRanges = Array.from({ length: 10 }, (_, i) => ({
-    start: i * 100 + 1,
-    end: (i + 1) * 100,
-    label: `${i * 100 + 1}~${(i + 1) * 100}`,
-  }));
+  const handlePresetRangeChange = (index: number, field: 'start' | 'end', value: number) => {
+    const newRanges = [...editablePresetRanges];
+    newRanges[index] = { ...newRanges[index], [field]: value };
+    newRanges[index].label = `${newRanges[index].start}~${newRanges[index].end}`;
+    setEditablePresetRanges(newRanges);
+  };
 
   const handlePresetClick = (presetIndex: number) => {
     setSelectedPresets(prevSelected => {
       const newSelection = prevSelected.includes(presetIndex)
         ? prevSelected.filter(item => item !== presetIndex)
         : [...prevSelected, presetIndex];
-      // Sort the selection for predictable order
       newSelection.sort((a, b) => a - b);
       return newSelection;
     });
@@ -59,7 +72,7 @@ export default function Home() {
 
     if (selectedPresets.length > 0) {
       selectedPresets.forEach(presetIndex => {
-        const range = presetRanges[presetIndex];
+        const range = editablePresetRanges[presetIndex];
         const filtered = allHanjas.filter(h => h.id >= range.start && h.id <= range.end);
         hanjasToProcess.push(...filtered);
       });
@@ -80,9 +93,9 @@ export default function Home() {
 
     if (selectedMode === 'quiz') {
       setHanjasForQuiz(hanjasToProcess);
-    } else if (selectedMode === 'viewer') { // viewer mode
+    } else if (selectedMode === 'viewer') {
       setHanjasForViewer(hanjasToProcess);
-    } else { // game mode
+    } else {
       setHanjasForGame(hanjasToProcess);
     }
     setMode(selectedMode);
@@ -90,7 +103,6 @@ export default function Home() {
 
   const handleBackToInput = () => {
     setMode('input');
-    // Reset quiz/viewer/game data but keep selections for convenience
     setHanjasForQuiz([]);
     setHanjasForViewer([]);
     setHanjasForGame([]);
@@ -105,17 +117,32 @@ export default function Home() {
           
           <div className="mb-3">
             <p className="form-label fw-bold">간편 범위 선택 (다중 선택 가능):</p>
-            {/* Rigid 5-column layout */}
-            <div className="row row-cols-5 g-2">
-              {presetRanges.map((preset, index) => (
-                <div key={index} className="col d-grid">
-                  <button
-                    type="button"
-                    className={`btn ${selectedPresets.includes(index) ? 'btn-primary' : 'btn-outline-primary'}`}
-                    onClick={() => handlePresetClick(index)}
-                  >
-                    {preset.label}
-                  </button>
+            <div className="row row-cols-1 row-cols-md-5 g-2">
+              {editablePresetRanges.map((preset, index) => (
+                <div key={index} className="col">
+                  <div className="input-group mb-1">
+                    <input
+                      type="number"
+                      className={`form-control ${selectedPresets.includes(index) ? 'selected-input' : ''}`}
+                      value={preset.start}
+                      onChange={(e) => handlePresetRangeChange(index, 'start', Number(e.target.value))}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <button
+                      type="button"
+                      className={`btn ${selectedPresets.includes(index) ? 'btn-primary' : 'btn-outline-primary'}`}
+                      onClick={() => handlePresetClick(index)}
+                    >
+                      ~
+                    </button>
+                    <input
+                      type="number"
+                      className={`form-control ${selectedPresets.includes(index) ? 'selected-input' : ''}`}
+                      value={preset.end}
+                      onChange={(e) => handlePresetRangeChange(index, 'end', Number(e.target.value))}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
                 </div>
               ))}
             </div>

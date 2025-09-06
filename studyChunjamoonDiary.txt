@@ -226,6 +226,16 @@ git push origin v1.2.4
 thousand_characters.json 수정
 HanjaViewer.tsx 수정
 
+~20250906 (토)
+-----------------
+학습 범위 선택 버튼을 변경하여 범위 설정 가능 하도록 함.
+
+git add, commit
+git tag v1.2.5
+git push origin main
+git push origin v1.2.5
+
+
 
 
 

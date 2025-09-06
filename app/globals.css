@@ -31,3 +31,7 @@ h1, h2, h3, h4, h5, h6 {
 .win-animation {
   animation: win-animation 1s infinite;
 }
+
+.selected-input {
+  background-color: #cfe2ff !important;
+}
