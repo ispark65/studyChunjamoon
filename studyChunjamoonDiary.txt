@@ -241,6 +241,11 @@ thousand_characters.json ~456까지 수정
 HanjaViewer.tsx ~56까지 수정
 
 
+20250917 (수)
+-----------------
+thousand_characters.json 채색채 변경
+
+
 
 
 
