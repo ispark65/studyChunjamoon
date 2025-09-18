@@ -246,6 +246,10 @@ HanjaViewer.tsx ~56까지 수정
 thousand_characters.json 채색채 변경
 
 
+20250918 (목)
+-----------------
+thousand_characters.json 오를승 변경
+HanjaViewer.tsx 승계납폐 변전의성 57번 풀이 변경
 
 
 
