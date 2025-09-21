@@ -252,6 +252,10 @@ thousand_characters.json 오를승 변경
 HanjaViewer.tsx 승계납폐 변전의성 57번 풀이 변경
 
 
+20250921 (일)
+-----------------
+HanjaViewer.tsx 우통광내 좌달승명, 기집분전 역취군영 59, 60번 풀이 변경
+
 
 
 https://m.blog.naver.com/PostList.naver?blogId=sriveryi&categoryName=%E5%A4%A9%E5%AD%97%E6%96%87&categoryNo=69&logCode=0&tab=1
