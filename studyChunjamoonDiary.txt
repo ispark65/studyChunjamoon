@@ -199,7 +199,7 @@ thousand_characters.json 381 부터 384까지 "전패비휴" 자리이나 빠져
 thousand_characters.json  번호정렬, gemini로 진행
 => 999번과 1000번 글자 없음.
 => id 603에서 "사막"이 한 글자씩 분리 안되어 있음. 원래부터 그렇게 되어 있던걸로 보임.
-=> 새로 종렬한 파일에서는 id 816과 817 사이에 "친척 척" 빠져 있으나 이전 파일에선 존재함을 확인.
+=> 새로 정렬한 파일에서는 id 816과 817 사이에 "친척 척" 빠져 있으나 이전 파일에선 존재함을 확인.
 
 고로 수동으로 어제 백업했던 thousand_characters.json 파일에서 수정함
 
@@ -256,10 +256,17 @@ HanjaViewer.tsx 승계납폐 변전의성 57번 풀이 변경
 -----------------
 HanjaViewer.tsx 우통광내 좌달승명, 기집분전 역취군영 59, 60번 풀이 변경
 
-~20250926 (금)
+~20250930 (화)
 -----------------
-thousand_characters.json 544번 가벼울 경 까지 확인
-HanjaViewer.tsx 67번까지 풀이 확인 및 변경
+HanjaViewer.tsx 70번까지 풀이 확인 및 변경
+thousand_characters.json 568번 한자까지 확인
+  603번에 2글자 들어가면서 뒤 번호들이 꼬였음, 724번에 지을작 없으나 들어가 있었음.
+  고로 603번부터 724번 삭제하면서 중간 번호 다시 정렬 완료.
+  {"id": 603, "character": "沙漠", "sound": "사막", "meaning": "사막"},
+  {"id": 603, "character": "沙", "sound": "사", "meaning": "모래"},
+  {"id": 604, "character": "漠", "sound": "막", "meaning": "사막"},
+  .................
+  {"id": 724, "character": "作", "sound": "작", "meaning": "지을"},
 
 
 
