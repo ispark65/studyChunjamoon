@@ -271,7 +271,7 @@ thousand_characters.json 568번 한자까지 확인
 ~20251002 (목)
 -----------------
 HanjaViewer.tsx 81번까지 풀이 확인 및 변경
-thousand_characters.json 656번 한자까지 확인
+thousand_characters.json 656번 한자까지 확인. 緜(면)과 巖(암)은 본자, 綿와 岩는 속자
 
 
 
