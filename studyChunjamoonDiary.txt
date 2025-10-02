@@ -268,10 +268,10 @@ thousand_characters.json 568번 한자까지 확인
   .................
   {"id": 724, "character": "作", "sound": "작", "meaning": "지을"},
 
-~20251001 (수)
+~20251002 (목)
 -----------------
-HanjaViewer.tsx 79번까지 풀이 확인 및 변경
-thousand_characters.json 640번 한자까지 확인
+HanjaViewer.tsx 81번까지 풀이 확인 및 변경
+thousand_characters.json 656번 한자까지 확인
 
 
 
