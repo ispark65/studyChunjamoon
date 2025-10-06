@@ -278,6 +278,13 @@ thousand_characters.json 656번 한자까지 확인. 緜(면)과 巖(암)은 본
 HanjaViewer.tsx 124번까지 풀이 확인 및 변경
 thousand_characters.json 1000번 한자까지 확인.
 
+~20251006 (월)
+-----------------
+git tag v1.3.0
+git push origin v1.3.0
+
+
+
 
 
 https://m.blog.naver.com/PostList.naver?blogId=sriveryi&categoryName=%E5%A4%A9%E5%AD%97%E6%96%87&categoryNo=69&logCode=0&tab=1
