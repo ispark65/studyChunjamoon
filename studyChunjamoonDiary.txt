@@ -359,7 +359,7 @@ git push origin v1.3.0
 ==> 내 폰 설정-개발자옵션 으로 들어가서 "USB 디버깅" 활성화
 ==> 안드로이드 스튜디오에서 내 기기를 선택.
     "Medium Phone API 36.1" 대신 samsung SM-N960N 선택하고 실행 
-=> webview 를 http://192.168.0.7:3000" 으로 등록하고 실행하면 "게임학시작" 만 안되고 나머진 됨.
+=> webview 를 http://192.168.0.94:3000" 으로 등록하고 실행하면 "게임학시작" 만 안되고 나머진 됨.
 ==> 20251008_천자문웹뷰.txt gemini cli 대화 저장 파일 참조
 
 -> D:\parkis\studyChunjamoon\mobile-app-gemini 를 D:\parkis\projects\chunjaApp 로 복사
